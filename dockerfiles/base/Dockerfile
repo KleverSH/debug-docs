@@ -14,13 +14,11 @@ COPY . ./
 
 RUN npm run build
 
-COPY build/soar.css src/dist
-
 
 # Prod environment
 FROM nginx:stable-alpine
 
-COPY --from=build /app/src /usr/share/nginx/html
+COPY --from=build /app/docs /usr/share/nginx/html
 
 
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
