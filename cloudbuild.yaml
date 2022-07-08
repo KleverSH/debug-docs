@@ -1,0 +1,49 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "gcr.io/recoverylink-err-dev/rl-docs",
+        "-f",
+        "./dockerfiles/base/Dockerfile",
+        ".",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/recoverylink-err-dev/rl-docs"]
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      [
+        "run",
+        "deploy",
+        "rl-docs",
+        "--image",
+        "gcr.io/recoverylink-err-dev/rl-docs",
+        "--region",
+        "us-central1",
+        "--project",
+        "recoverylink-err-dev",
+        "--memory",
+        "512Mi",
+        "--concurrency",
+        "80",
+        "--cpu",
+        "1",
+        "--timeout",
+        "3600",
+        "--min-instances",
+        "0",
+        "--max-instances",
+        "3",
+        "--port",
+        "80",
+        "--ingress",
+        "all",
+        "--platform",
+        "managed",
+        "--allow-unauthenticated",
+      ]
+images:
+  - gcr.io/recoverylink-err-dev/rl-docs
+timeout: 900s
